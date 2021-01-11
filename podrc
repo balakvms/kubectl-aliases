@@ -1,0 +1,66 @@
+## Author: Balakumaran Venkataraman
+##
+## Add to bashrc
+##   source podrc
+##
+
+alias nodes='kubectl get nodes -o wide'
+alias ns='kubectl get ns'
+alias pods='kubectl get pods -A -o wide'
+alias svc='kubectl get svc -A'
+
+
+function podexec
+{
+echo "---> $*"
+
+read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
+
+shift
+if [[ "$1" == bash ]]; then
+     kubectl exec -it ${podname} -n ${podns}  -- sh -c "bash || sh"
+else
+  kubectl exec -it ${podname} -n ${podns} -- $@
+fi
+}
+
+function podssh
+{
+podexec $1 bash
+}
+
+function poddel
+{
+
+echo "---> $*"
+read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
+
+kubectl delete pods -n ${podns} ${podname}
+}
+
+function poddelf
+{
+
+echo "---> $*"
+read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
+
+kubectl delete pods -n ${podns} ${podname} --grace-period=0 --force
+} 
+
+function poddes
+{
+echo "---> $*"
+read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
+
+kubectl describe pods -n ${podns} ${podname}
+}
+
+function podedit
+{
+
+echo "---> $*"
+read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
+
+kubectl edit pods -n ${podns} ${podname}
+
+}
