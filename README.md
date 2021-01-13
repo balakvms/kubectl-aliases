@@ -1,5 +1,6 @@
-Shortcuts for Kubectl cli
+# Shortcuts for Kubectl cli
 
+```
 pods 	--> list all pods in the cluster
 nodes 	--> list nodes
 ns	--> list namespace
@@ -10,7 +11,6 @@ sc	--> list storage class
 pv	--> list persistent volumes
 pvc 	--> list persisent volume claim
 
-
 kg <p|d|sf|r|c|s|j|e><namespace>--> list pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given namespace 
 
 podssh <podname> 		--> login to pod
@@ -19,3 +19,4 @@ podel <podname> 		--> delete pod
 poddelf <podname>		--> force delete pod
 poddes <podname>		--> describe pod
 podedit	<podname>		--> edit pod descriptor
+```
