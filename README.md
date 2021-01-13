@@ -1,4 +1,4 @@
-# Shortcuts for Kubectl cli
+# Shortcuts for Kube CLI
 
 ```
 pods 	--> list all pods in the cluster
