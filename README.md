@@ -1,5 +1,7 @@
 # Shortcuts for Kube CLI
 
+#### source podrc in bashrc file
+
 ```
 pods 	--> list all pods in the cluster
 nodes 	--> list nodes
