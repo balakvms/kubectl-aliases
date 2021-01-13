@@ -3,16 +3,66 @@
 ## Add to bashrc
 ##   source podrc
 ##
-
+alias k='kubectl'
 alias nodes='kubectl get nodes -o wide'
 alias ns='kubectl get ns'
 alias pods='kubectl get pods -A -o wide'
-alias svc='kubectl get svc -A'
+alias dep='kubectl get deployment -A'
 
+alias svc='kubectl get svc -A'
+alias ep='kubectl get ep -A'
+
+alias sc='kubectl get sc'
+alias pv='kubectl get pv'
+alias pvc='kubectl get pvc -A'
+
+
+function kg
+{
+#kubectl get
+echo ">>>> $*"
+
+    if [[ -z $1 ]];then
+        echo "USAGE: kg <p|d|sf|r|c|s|j|e> # For pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event"
+        return
+    fi
+
+    construct=$1
+    shift
+    case $construct in
+    p*)
+        kubectl get pods -n $@
+        ;;
+    d)
+        kubectl get deploy -n $@
+        ;;
+    ds*)
+        kubectl get daemonset -n $@
+        ;;    
+    sf*)
+        kubectl get statefulset -n $@
+        ;;
+    r*)
+        kubectl get replicaset -n $@
+        ;;
+    s)
+        kubectl get svc -n $@
+        ;;
+    c*)
+        kubectl get cm -n $@
+        ;;
+    j*)
+        kubectl get job -n $@
+        ;;
+    e*)
+        kubectl get event -n $@
+        ;;
+    esac
+}
 
 function podexec
 {
-echo "---> $*"
+echo ">>>> $*"
 
 read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
@@ -32,7 +82,7 @@ podexec $1 bash
 function poddel
 {
 
-echo "---> $*"
+echo ">>>> $*"
 read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl delete pods -n ${podns} ${podname}
@@ -41,7 +91,7 @@ kubectl delete pods -n ${podns} ${podname}
 function poddelf
 {
 
-echo "---> $*"
+echo ">>>> $*"
 read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl delete pods -n ${podns} ${podname} --grace-period=0 --force
@@ -49,7 +99,7 @@ kubectl delete pods -n ${podns} ${podname} --grace-period=0 --force
 
 function poddes
 {
-echo "---> $*"
+echo ">>>> $*"
 read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl describe pods -n ${podns} ${podname}
@@ -58,7 +108,7 @@ kubectl describe pods -n ${podns} ${podname}
 function podedit
 {
 
-echo "---> $*"
+echo ">>>> $*"
 read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl edit pods -n ${podns} ${podname}
