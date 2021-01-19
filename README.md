@@ -4,16 +4,21 @@
 
 ```
 pods 	--> list all pods in the cluster
-nodes 	--> list nodes
-ns	--> list namespace
-dep 	--> list deployments
-svc 	--> list services
-ep	--> list endpoints
-sc	--> list storage class
-pv	--> list persistent volumes
-pvc 	--> list persisent volume claim
+nodes 	--> list all nodes
+ns	--> list all namespace
+dep 	--> list all deployments
+ds	--> list all daemonset
+rs	--> list all replicaset
+jobs 	--> list all jobs
+events 	--> list all events
+svc 	--> list all services
+ep	--> list all endpoints
+sc	--> list all storage class
+pv	--> list all persistent volumes
+pvc 	--> list all persisent volume claim
 
-kg <p|d|sf|r|c|s|j|e><namespace>--> list pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given namespace 
+kg <p|d|ds|ss|rs|c|s|j|e> <namespace>--> list pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given namespace 
+kd <p|d|ds|ss|rs|c|s|j|e> <name>--> describe pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given name 
 
 podssh <podname> 		--> login to pod
 podexec <podname> <command> 	--> exec the given command
