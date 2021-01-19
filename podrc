@@ -8,14 +8,17 @@ alias nodes='kubectl get nodes -o wide'
 alias ns='kubectl get ns'
 alias pods='kubectl get pods -A -o wide'
 alias dep='kubectl get deployment -A'
-
+alias ds='kubectl get daemonset -A'
+alias rs='kubectl get replicaset -A'
+alias jobs='kubectl get jobs -A'
+alias events='kubectl get events -A'
+alias cm='kubectl get cm -A'
 alias svc='kubectl get svc -A'
 alias ep='kubectl get ep -A'
+alias pvc='kubectl get pvc -A'
 
 alias sc='kubectl get sc'
 alias pv='kubectl get pv'
-alias pvc='kubectl get pvc -A'
-
 
 function kg
 {
@@ -23,7 +26,7 @@ function kg
 echo ">>>> $*"
 
     if [[ -z $1 ]];then
-        echo "USAGE: kg <p|d|sf|r|c|s|j|e> # For pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event"
+        echo "USAGE: kg <p|d|ds|ss|rs|c|s|j|e> namespace # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event"
         return
     fi
 
@@ -39,10 +42,10 @@ echo ">>>> $*"
     ds*)
         kubectl get daemonset -n $@
         ;;    
-    sf*)
+    ss*)
         kubectl get statefulset -n $@
         ;;
-    r*)
+    rs*)
         kubectl get replicaset -n $@
         ;;
     s)
@@ -59,6 +62,50 @@ echo ">>>> $*"
         ;;
     esac
 }
+
+function kd
+{
+#kubectl describe
+echo ">>>> $*"
+
+    if [[ -z $1 ]];then
+        echo "USAGE: kd <p|d|ds|ss|rs|c|s|j|e> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event"
+        return
+    fi
+
+    construct=$1
+    shift
+    case $construct in
+    p*)
+        poddes $@
+        ;;
+    d)
+        depdes $@
+        ;;
+    ds*)
+        dsdes $@
+        ;;
+    ss*)
+        ssdes $@
+        ;;
+    rs*)
+        rsdes $@
+        ;;
+    s)
+        svcdes $@
+        ;;
+    c*)
+        cmdes $@
+        ;;
+    j*)
+        jobdes $@
+        ;;
+    e*)
+        eventdes $@
+        ;;
+    esac
+}
+
 
 function podexec
 {
@@ -113,4 +160,67 @@ read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl edit pods -n ${podns} ${podname}
 
+}
+
+function depdes
+{
+echo ">>>> $*"
+read -r depns depname <<< $(kubectl get deploy -A |grep $1 |awk '{print $1,$2}')
+
+kubectl describe deploy -n ${depns} ${depname}
+}
+
+
+function dsdes
+{
+echo ">>>> $*"
+read -r dsns dsname <<< $(kubectl get daemonset -A |grep $1 |awk '{print $1,$2}')
+
+kubectl describe daemonset -n ${dsns} ${dsname}
+}
+
+function ssdes
+{
+echo ">>>> $*"
+read -r ssns ssname <<< $(kubectl get statefulset -A |grep $1 |awk '{print $1,$2}')
+
+kubectl describe statefulset -n ${ssns} ${ssname}
+
+}
+
+function rsdes
+{
+echo ">>>> $*"
+read -r rsns rsname <<< $(kubectl get replicaset -A |grep $1 |awk '{print $1,$2}')
+kubectl describe replicaset -n ${rsns} ${rsname}
+}
+
+
+function cmdes
+{
+echo ">>>> $*"
+read -r cmns cmname <<< $(kubectl get cm -A |grep $1 |awk '{print $1,$2}')
+kubectl describe cm -n ${cmns} ${cmname}
+}
+
+function svcdes
+{
+echo ">>>> $*"
+read -r svcns svcname <<< $(kubectl get service -A |grep $1 |awk '{print $1,$2}')
+kubectl describe service -n ${svcns} ${svcname}
+}
+
+
+function jobdes
+{
+echo ">>>> $*"
+read -r jobns jobname <<< $(kubectl get job -A |grep $1 |awk '{print $1,$2}')
+kubectl describe job -n ${jobns} ${jobname}
+}
+
+function eventdes
+{
+echo ">>>> $*"
+read -r eventns eventname <<< $(pods |grep $1 |awk '{print $1,$2}')
+kubectl describe event -n ${eventns} ${eventname}
 }
