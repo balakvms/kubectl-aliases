@@ -69,41 +69,105 @@ function kd
 echo ">>>> $*"
 
     if [[ -z $1 ]];then
-        echo "USAGE: kd <p|d|ds|ss|rs|c|s|j|e> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event"
+        echo "USAGE: kd <p|d|ds|ss|rs|c|s|j|e|pv> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc"
         return
     fi
 
-    construct=$1
+    arg=$1
     shift
-    case $construct in
+    karg=$@
+    construct=
+    case $arg in
     p*)
-        poddes $@
+        construct=pod
         ;;
     d)
-        depdes $@
+        construct=deployment
         ;;
     ds*)
-        dsdes $@
+        construct=daemonset
         ;;
     ss*)
-        ssdes $@
+        construct=statefulset
         ;;
     rs*)
-        rsdes $@
+        construct=replicaset
         ;;
     s)
-        svcdes $@
+        construct=service
         ;;
     c*)
-        cmdes $@
+        construct=cm
         ;;
     j*)
-        jobdes $@
+        construct=job
         ;;
     e*)
-        eventdes $@
+        construct=event
+        ;;
+    pv*)
+        construct=pvc
         ;;
     esac
+
+    echo ">>>> $karg"
+    read -r kns kname <<< $(kubectl get $construct -A |grep $1 |awk '{print $1,$2}')
+    kubectl describe $construct -n ${kns} ${kname}
+
+}
+
+
+function ke
+{
+#kubectl edit
+echo ">>>> $*"
+
+    if [[ -z $1 ]];then
+        echo "USAGE: ke <p|d|ds|ss|rs|c|s|j|e|pv> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc"
+        return
+    fi
+
+    arg=$1
+    shift
+    karg=$@
+    construct=
+    case $arg in
+    p*)
+        construct=pod
+        ;;
+    d)
+        construct=deployment
+        ;;
+    ds*)
+        construct=daemonset
+        ;;
+    ss*)
+        construct=statefulset
+        ;;
+    rs*)
+        construct=replicaset
+        ;;
+    s)
+        construct=service
+        ;;
+    c*)
+        construct=cm
+        ;;
+    j*)
+        construct=job
+        ;;
+    e*)
+        construct=event
+        ;;
+
+    pv*)
+        construct=pvc
+        ;;
+    esac
+
+    echo ">>>> $karg"
+    read -r kns kname <<< $(kubectl get $construct -A |grep $1 |awk '{print $1,$2}')
+    kubectl edit $construct -n ${kns} ${kname}
 }
 
 
@@ -160,67 +224,4 @@ read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 
 kubectl edit pods -n ${podns} ${podname}
 
-}
-
-function depdes
-{
-echo ">>>> $*"
-read -r depns depname <<< $(kubectl get deploy -A |grep $1 |awk '{print $1,$2}')
-
-kubectl describe deploy -n ${depns} ${depname}
-}
-
-
-function dsdes
-{
-echo ">>>> $*"
-read -r dsns dsname <<< $(kubectl get daemonset -A |grep $1 |awk '{print $1,$2}')
-
-kubectl describe daemonset -n ${dsns} ${dsname}
-}
-
-function ssdes
-{
-echo ">>>> $*"
-read -r ssns ssname <<< $(kubectl get statefulset -A |grep $1 |awk '{print $1,$2}')
-
-kubectl describe statefulset -n ${ssns} ${ssname}
-
-}
-
-function rsdes
-{
-echo ">>>> $*"
-read -r rsns rsname <<< $(kubectl get replicaset -A |grep $1 |awk '{print $1,$2}')
-kubectl describe replicaset -n ${rsns} ${rsname}
-}
-
-
-function cmdes
-{
-echo ">>>> $*"
-read -r cmns cmname <<< $(kubectl get cm -A |grep $1 |awk '{print $1,$2}')
-kubectl describe cm -n ${cmns} ${cmname}
-}
-
-function svcdes
-{
-echo ">>>> $*"
-read -r svcns svcname <<< $(kubectl get service -A |grep $1 |awk '{print $1,$2}')
-kubectl describe service -n ${svcns} ${svcname}
-}
-
-
-function jobdes
-{
-echo ">>>> $*"
-read -r jobns jobname <<< $(kubectl get job -A |grep $1 |awk '{print $1,$2}')
-kubectl describe job -n ${jobns} ${jobname}
-}
-
-function eventdes
-{
-echo ">>>> $*"
-read -r eventns eventname <<< $(pods |grep $1 |awk '{print $1,$2}')
-kubectl describe event -n ${eventns} ${eventname}
 }
