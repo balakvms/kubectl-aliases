@@ -26,7 +26,7 @@ function kg
 echo ">>>> $*"
 
     if [[ -z $1 ]];then
-        echo "USAGE: kg <p|d|ds|ss|rs|c|s|j|e> namespace # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event"
+        echo "USAGE: kg <p|d|ds|ss|rs|c|s|j|e|n> namespace # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|nad"
         return
     fi
 
@@ -60,6 +60,9 @@ echo ">>>> $*"
     e*)
         kubectl get event -n $@
         ;;
+    n*)
+        kubectl get net-attach-def -n $@
+        ;;
     esac
 }
 
@@ -69,7 +72,7 @@ function kd
 echo ">>>> $*"
 
     if [[ -z $1 ]];then
-        echo "USAGE: kd <p|d|ds|ss|rs|c|s|j|e|pv> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc"
+        echo "USAGE: kd <p|d|ds|ss|rs|c|s|j|e|pv|n> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc|nad"
         return
     fi
 
@@ -107,6 +110,9 @@ echo ">>>> $*"
         ;;
     pv*)
         construct=pvc
+        ;;
+    n*)
+        construct=net-attach-def
         ;;
     esac
 
@@ -123,7 +129,7 @@ function ke
 echo ">>>> $*"
 
     if [[ -z $1 ]];then
-        echo "USAGE: ke <p|d|ds|ss|rs|c|s|j|e|pv> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc"
+        echo "USAGE: ke <p|d|ds|ss|rs|c|s|j|e|pv|n> name # For pod|deploy|daemonset|statefulset|replicaset|cm|service|job|event|pvc|nad"
         return
     fi
 
@@ -163,12 +169,17 @@ echo ">>>> $*"
     pv*)
         construct=pvc
         ;;
+    n*)
+        construct=net-attach-def
+        ;;
     esac
 
     echo ">>>> $karg"
     read -r kns kname <<< $(kubectl get $construct -A |grep $1 |awk '{print $1,$2}')
     kubectl edit $construct -n ${kns} ${kname}
 }
+
+
 
 
 function podexec
@@ -225,3 +236,4 @@ read -r podns podname <<< $(pods |grep $1 |awk '{print $1,$2}')
 kubectl edit pods -n ${podns} ${podname}
 
 }
+
