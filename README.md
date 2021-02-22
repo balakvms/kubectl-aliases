@@ -27,6 +27,5 @@ podssh <podname> 		--> login to pod
 podexec <podname> <command> 	--> exec the given command
 podel <podname> 		--> delete pod
 poddelf <podname>		--> force delete pod
-poddes <podname>		--> describe pod
-podedit	<podname>		--> edit pod descriptor
+
 ```
