@@ -16,9 +16,11 @@ ep	--> list all endpoints
 sc	--> list all storage class
 pv	--> list all persistent volumes
 pvc 	--> list all persisent volume claim
+nad  --> list all net-attach-def
 
-kg <p|d|ds|ss|rs|c|s|j|e> <namespace>--> list pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given namespace 
-kd <p|d|ds|ss|rs|c|s|j|e> <name>--> describe pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event for the given name 
+kg <p|d|ds|ss|rs|c|s|j|e|n> <namespace> --> list pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event|net-attach-def| for the given namespace 
+kd <p|d|ds|ss|rs|c|s|j|e|n> <name> --> describe pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event|net-attach-def| for the given name 
+ke <p|d|ds|ss|rs|c|s|j|e|n> <name> --> edit pod|deploy|deamonset|statefulset|replicaset|cm|service|job|event|net-attach-def| for the given name 
 
 podssh <podname> 		--> login to pod
 podexec <podname> <command> 	--> exec the given command
