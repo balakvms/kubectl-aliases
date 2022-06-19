@@ -20,7 +20,6 @@
 alias k='kubectl'
 alias nodes='kubectl get nodes -o wide'
 alias ns='kubectl get ns'
-alias pods='kubectl get pods -A -o wide'
 alias dep='kubectl get deployment -A'
 alias ds='kubectl get daemonset -A'
 alias rs='kubectl get replicaset -A'
@@ -33,6 +32,25 @@ alias pvc='kubectl get pvc -A'
 
 alias sc='kubectl get sc'
 alias pv='kubectl get pv'
+
+function pods
+{
+# List all pods or one too many pattern search
+echo "#>>>"
+if [ -z "$1" ]
+then
+   kubectl get po -A -o wide
+else
+
+arr="$@"
+for value in ${arr}
+do
+        echo -e "\n$value"
+        kubectl get po -A -o wide |grep $value
+done
+fi
+}
+
 
 function kg
 {
